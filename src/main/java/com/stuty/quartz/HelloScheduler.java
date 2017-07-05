@@ -13,10 +13,13 @@ public class HelloScheduler {
     public static void main(String[] args) throws SchedulerException {
         //创建一个JobDetail实例
         JobDetail jobDetail = JobBuilder.newJob(HelloJob.class)
-                .withIdentity("myJob","group1").build();
+                .withIdentity("myJob","group1")
+                .usingJobData("message", "helloJob")
+                .usingJobData("jobFloat", 3.14f)
+                .build();
         //创建一个Trigger实例
-        Trigger trigger = TriggerBuilder.newTrigger().withIdentity("myTrigger", "group1")
-                .startNow().withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(2).repeatForever())
+        CronTrigger trigger = (CronTrigger) TriggerBuilder.newTrigger().withIdentity("myTrigger", "group1")
+                .withSchedule(CronScheduleBuilder.cronSchedule("0/5 * 14,17 * * ?"))
                 .build();
         //创建scheduler实例
         SchedulerFactory sfact = new StdSchedulerFactory();
